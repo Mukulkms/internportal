@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Intern Portal - Forgot Password</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+      .mb-3 {
+        font-family: sans-serif;
+      }
+
+     
+    </style>
+
+</head>
+
+<body>
+    <div class="forget-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="shadow rounded">
+                        <div class="row">
+                            <div class="col-md-7 ">
+                                <div class="form-left h-100 py-4 px-5">
+                                    <h3 class="mb-3">Forgot Password</h3>
+                                    <form action="/reset-password" method="POST" class="row g-4" id="forgotPasswordForm">
+                                        <div class="col-12">
+                                            <label for="newPassword" class="form-label">New Password<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Enter New Password">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label for="confirmPassword" class="form-label">Confirm Password<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm New Password">
+                                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <button type="submit" class="btn btn-dark px-4 float mt-4">Reset Password</button>
+                                        </div>
+
+                                        <div id="messageContainer"></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-5 ps-0 d-none d-md-block">
+                                <img src="/images/logo.png" style="height:100%; width:100%;" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async function (event) {
+          event.preventDefault();
+      
+          const newPassword = document.getElementsByName('newPassword')[0].value;
+          const confirmPassword = document.getElementsByName('confirmPassword')[0].value;
+      
+          if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
+            alert('Please fill in both fields and ensure that the passwords match.');
+            return;
+          }
+      
+          const resetToken = window.location.pathname.split('/').pop(); // Extract the reset token from the URL
+          
+          try {
+            const response = await fetch(`/reset-password/${resetToken}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ newPassword }),
+            });
+      
+            const data = await response.json();
+      
+            if (data.success) {
+              document.getElementById('messageContainer').innerHTML = '<span style="color: green;">Password reset successful. You can now log in with your new password.</span>';
+            } else {
+              document.getElementById('messageContainer').innerHTML = `<span style="color: red;">${data.message}</span>`;
+            }
+          } catch (error) {
+            console.error('Error during password reset:', error);
+            document.getElementById('messageContainer').innerHTML = `<span style="color: red;">${error.message}</span>`;
+          }
+        });
+    
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const togglePasswordButton = document.getElementById('togglePassword');
+    
+        togglePasswordButton.addEventListener('click', function () {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            togglePasswordButton.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+        });
+    </script>
+    
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+a {
+    text-decoration: none;
+}
+.login-page ,.forget-page{
+    width: 100%;
+    height: 100vh;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+}
+
+.form-left{
+    background-color: rgb(253, 238, 192);
+}
+.r-page {
+    width: 100%;
+    height: 100vh;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+}
+.form-right i {
+    font-size: 100px;
+}
+body{
+background-image: url('/images/2.jpg');
+background-size:cover;
+background-repeat: no-repeat;
+height: 100vh; 
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Intern Portal - Forgot Password</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .mb-3 {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="forget-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="shadow rounded">
+                        <div class="row">
+                            <div class="col-md-7 ">
+                                <div class="form-left h-100 py-4 px-5">
+                                    <h3 class="mb-3">Forgot Password</h3>
+                                    <form action="/reset-password-link" method="POST" class="row g-4" id="forgotPasswordForm">
+                                        <div class="col-12">
+                                            <label for="newPassword" class="form-label">Registered Email<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="text" class="form-control" name="email" id="email" placeholder="Enter your Email">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <button type="button" class="btn btn-dark px-4 float mt-4" onclick="checkAndProceed()">Send</button>
+                                        </div>
+
+                                        <div id="messageContainer"></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-5 ps-0 d-none d-md-block">
+                                <img src="/images/logo.png" style="height:100%; width:100%;" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkAndProceed() {
+            const email = document.getElementById('email').value;
+    
+            if (!email) {
+                alert('Please enter your email.');
+                return;
+            }
+    
+            try {
+                const response = await fetch('/send-forgot-link', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+    
+                const data = await response.json();
+    
+                if (data.success) {
+                    // Email sent successfully, you can provide a message or handle it accordingly
+                    document.getElementById('messageContainer').innerHTML = '<span style="color: green;">Password reset link sent successfully. Check your email.</span>';
+                } else {
+                    // Email not registered
+                    document.getElementById('messageContainer').innerHTML = '<span style="color: red;">Email not registered. Please check your email address.</span>';
+                }
+            } catch (error) {
+                console.error('Error sending forgot link:', error);
+            }
+        }
+    </script>
+    
+    
+</body>
+</html>
